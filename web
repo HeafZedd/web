@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Trang Web (designMode)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid #1e293b;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+
+        .toast {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Công Cụ Lấy Mã designMode</h2>
+        <p>Bấm <b>Sao Chép Mã</b> để copy đoạn code dùng trên Console trình duyệt.</p>
+
+        <div class="code-box">
+            <span id="codeText">document.designMode = 'on';</span>
+        </div>
+
+        <button onclick="copyCode()">Sao Chép Mã</button>
+        <div id="toast" class="toast">Đã sao chép thành công!</div>
+    </div>
+
+    <script>
+        function copyCode() {
+            const textToCopy = document.getElementById('codeText').innerText;
+            const toast = document.getElementById('toast');
+
+            // Cách 1: Dùng Clipboard API chuẩn
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast();
+                }).catch(() => {
+                    fallbackCopy(textToCopy);
+                });
+            } else {
+                // Cách 2: Dùng phương pháp truyền thống tương thích mọi môi trường (file://, HTTP,...)
+                fallbackCopy(textToCopy);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                alert('Không thể sao chép tự động. Bạn hãy bôi đen dòng chữ và bấm Ctrl+C.');
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
